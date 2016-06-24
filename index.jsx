@@ -10,6 +10,7 @@ class Container extends React.Component {
     }
     this.onInputBoxChange = this.onInputBoxChange.bind(this);
     this.onSubmitButtonClick = this.onSubmitButtonClick.bind(this);
+    this.onDeleteButtonClick = this.onDeleteButtonClick.bind(this);
   }
   //change this.state.newItem by 'listening' to the input box
   onInputBoxChange(evt){
@@ -31,6 +32,14 @@ class Container extends React.Component {
     });
     console.log(oldArray, updatedArr, 'from onSubmitButtonClick');
   }
+  onDeleteButtonClick(evt){
+    var id = evt.target.id;
+    console.log(id);
+    document.getElementById(id).addEventListener('click', function(evt){
+      var target = evt.target;
+      console.log(target);
+    });
+  }
   render(){
     return(
       <div className='container'>
@@ -38,7 +47,8 @@ class Container extends React.Component {
         <InputForm newItem={this.state.newItem}
           onItemChange={this.onInputBoxChange}
           onSubmit={this.onSubmitButtonClick} />
-        <List items={this.state.itemArr} />
+        <List items={this.state.itemArr}
+          delete={this.onDeleteButtonClick} />
       </div>
     );
   }
@@ -71,11 +81,21 @@ class List extends React.Component {
   }
   render(){
     var items = this.props.items.map(function(item, index){
-      return <li key={index}>{item}</li>;
+      return (
+        <div key={index}>
+          <li className='item' key={index}>{item}
+            <span className='item__span' key={'item__span' + index}>
+              <button className='item__edit' key={'item__edit' + index}>Edit</button>
+              <button className='item__delete' id={'delete'+index}
+                key={'item__delete' + index}>Delete</button>
+            </span>
+          </li>
+        </div>
+      );
     });
     return(
       <div className='list__container'>
-        <ul className='list'>
+        <ul id='list' onClick={this.props.delete} >
           {items}
         </ul>
       </div>

@@ -78,6 +78,7 @@
 	    };
 	    _this.onInputBoxChange = _this.onInputBoxChange.bind(_this);
 	    _this.onSubmitButtonClick = _this.onSubmitButtonClick.bind(_this);
+	    _this.onDeleteButtonClick = _this.onDeleteButtonClick.bind(_this);
 	    return _this;
 	  }
 	  //change this.state.newItem by 'listening' to the input box
@@ -108,6 +109,16 @@
 	      console.log(oldArray, updatedArr, 'from onSubmitButtonClick');
 	    }
 	  }, {
+	    key: 'onDeleteButtonClick',
+	    value: function onDeleteButtonClick(evt) {
+	      var id = evt.target.id;
+	      console.log(id);
+	      document.getElementById(id).addEventListener('click', function (evt) {
+	        var target = evt.target;
+	        console.log(target);
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -121,7 +132,8 @@
 	        _react2.default.createElement(InputForm, { newItem: this.state.newItem,
 	          onItemChange: this.onInputBoxChange,
 	          onSubmit: this.onSubmitButtonClick }),
-	        _react2.default.createElement(List, { items: this.state.itemArr })
+	        _react2.default.createElement(List, { items: this.state.itemArr,
+	          'delete': this.onDeleteButtonClick })
 	      );
 	    }
 	  }]);
@@ -176,9 +188,28 @@
 	    value: function render() {
 	      var items = this.props.items.map(function (item, index) {
 	        return _react2.default.createElement(
-	          'li',
+	          'div',
 	          { key: index },
-	          item
+	          _react2.default.createElement(
+	            'li',
+	            { className: 'item', key: index },
+	            item,
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'item__span', key: 'item__span' + index },
+	              _react2.default.createElement(
+	                'button',
+	                { className: 'item__edit', key: 'item__edit' + index },
+	                'Edit'
+	              ),
+	              _react2.default.createElement(
+	                'button',
+	                { className: 'item__delete', id: 'delete' + index,
+	                  key: 'item__delete' + index },
+	                'Delete'
+	              )
+	            )
+	          )
 	        );
 	      });
 	      return _react2.default.createElement(
@@ -186,7 +217,7 @@
 	        { className: 'list__container' },
 	        _react2.default.createElement(
 	          'ul',
-	          { className: 'list' },
+	          { id: 'list', onClick: this.props.delete },
 	          items
 	        )
 	      );
