@@ -78,9 +78,10 @@
 	    };
 	    _this.onInputBoxChange = _this.onInputBoxChange.bind(_this);
 	    _this.onSubmitButtonClick = _this.onSubmitButtonClick.bind(_this);
-	    _this.onDeleteButtonClick = _this.onDeleteButtonClick.bind(_this);
+	    _this.onEditOrDeleteButtonClick = _this.onEditOrDeleteButtonClick.bind(_this);
 	    return _this;
 	  }
+	
 	  //change this.state.newItem by 'listening' to the input box
 	
 	
@@ -91,6 +92,7 @@
 	      this.setState({ newItem: itemText });
 	      console.log(this.state.newItem);
 	    }
+	
 	    //click the submit button and change this.state.itemArr
 	
 	  }, {
@@ -106,17 +108,28 @@
 	        newItem: '',
 	        itemArr: updatedArr
 	      });
-	      console.log(oldArray, updatedArr, 'from onSubmitButtonClick');
 	    }
 	  }, {
-	    key: 'onDeleteButtonClick',
-	    value: function onDeleteButtonClick(evt) {
-	      var id = evt.target.id;
-	      console.log(id);
-	      document.getElementById(id).addEventListener('click', function (evt) {
-	        var target = evt.target;
-	        console.log(target);
-	      });
+	    key: 'onEditOrDeleteButtonClick',
+	    value: function onEditOrDeleteButtonClick(evt) {
+	      //click on delete and slice the item from this.state.itemArr
+	      var id = evt.target.parentNode.parentNode.parentNode.id;
+	      var buttonType = evt.target.innerText;
+	      var oldArray = this.state.itemArr;
+	      var updatedArr;
+	      console.log(id, buttonType, this.state.itemArr[id], 'from onDeleteButtonClick');
+	      if (buttonType === 'Delete') {
+	        if (oldArray.length === 1) {
+	          updatedArr = this.setState({ itemArr: [] });
+	        } else {
+	          updatedArr = oldArray.filter(function (item) {
+	            var index = oldArray.indexOf(item).toString();
+	            index !== id;
+	          });
+	          console.log(updatedArr, 'from button');
+	          //this.setState({ itemArr: updatedArr });
+	        }
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -133,7 +146,7 @@
 	          onItemChange: this.onInputBoxChange,
 	          onSubmit: this.onSubmitButtonClick }),
 	        _react2.default.createElement(List, { items: this.state.itemArr,
-	          'delete': this.onDeleteButtonClick })
+	          'delete': this.onEditOrDeleteButtonClick })
 	      );
 	    }
 	  }]);
@@ -189,7 +202,7 @@
 	      var items = this.props.items.map(function (item, index) {
 	        return _react2.default.createElement(
 	          'div',
-	          { key: index },
+	          { id: index, key: index },
 	          _react2.default.createElement(
 	            'li',
 	            { className: 'item', key: index },
@@ -199,7 +212,7 @@
 	              { className: 'item__span', key: 'item__span' + index },
 	              _react2.default.createElement(
 	                'button',
-	                { className: 'item__edit', key: 'item__edit' + index },
+	                { className: 'item__edit', id: 'edit' + index, key: 'item__edit' + index },
 	                'Edit'
 	              ),
 	              _react2.default.createElement(

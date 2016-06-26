@@ -10,14 +10,16 @@ class Container extends React.Component {
     }
     this.onInputBoxChange = this.onInputBoxChange.bind(this);
     this.onSubmitButtonClick = this.onSubmitButtonClick.bind(this);
-    this.onDeleteButtonClick = this.onDeleteButtonClick.bind(this);
+    this.onEditOrDeleteButtonClick = this.onEditOrDeleteButtonClick.bind(this);
   }
+
   //change this.state.newItem by 'listening' to the input box
   onInputBoxChange(evt){
     var itemText = evt.target.value;
     this.setState({newItem: itemText});
     console.log(this.state.newItem);
   }
+
   //click the submit button and change this.state.itemArr
   onSubmitButtonClick(evt){
     evt.preventDefault();
@@ -30,16 +32,29 @@ class Container extends React.Component {
       newItem: '',
       itemArr: updatedArr
     });
-    console.log(oldArray, updatedArr, 'from onSubmitButtonClick');
   }
-  onDeleteButtonClick(evt){
-    var id = evt.target.id;
-    console.log(id);
-    document.getElementById(id).addEventListener('click', function(evt){
-      var target = evt.target;
-      console.log(target);
-    });
-  }
+
+  onEditOrDeleteButtonClick(evt){
+    //click on delete and slice the item from this.state.itemArr
+    var id = evt.target.parentNode.parentNode.parentNode.id;
+    var buttonType = evt.target.innerText;
+    var oldArray = this.state.itemArr;
+    var updatedArr;
+    console.log(id, buttonType, this.state.itemArr[id], 'from onDeleteButtonClick');
+    if (buttonType === 'Delete'){
+      if (oldArray.length === 1){
+        updatedArr = this.setState({ itemArr: [] });
+      } else {
+        updatedArr = oldArray.filter(function(item){
+          var index = oldArray.indexOf(item).toString();
+          index !== id;
+        });
+        console.log(updatedArr, 'from button');
+        //this.setState({ itemArr: updatedArr });
+      }
+    }
+  };
+
   render(){
     return(
       <div className='container'>
@@ -48,7 +63,7 @@ class Container extends React.Component {
           onItemChange={this.onInputBoxChange}
           onSubmit={this.onSubmitButtonClick} />
         <List items={this.state.itemArr}
-          delete={this.onDeleteButtonClick} />
+          delete={this.onEditOrDeleteButtonClick} />
       </div>
     );
   }
@@ -82,11 +97,11 @@ class List extends React.Component {
   render(){
     var items = this.props.items.map(function(item, index){
       return (
-        <div key={index}>
+        <div id={index} key={index}>
           <li className='item' key={index}>{item}
             <span className='item__span' key={'item__span' + index}>
-              <button className='item__edit' key={'item__edit' + index}>Edit</button>
-              <button className='item__delete' id={'delete'+index}
+              <button className='item__edit' id={'edit' + index} key={'item__edit' + index}>Edit</button>
+              <button className='item__delete' id={'delete' + index}
                 key={'item__delete' + index}>Delete</button>
             </span>
           </li>
